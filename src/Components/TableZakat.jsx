@@ -73,11 +73,22 @@ const TableZakat = () => {
     const formattedTime = time.toLocaleString("id-ID", options);
     const hours = time.getHours();
 
-    // Customize AM/PM to "siang" or "malam"
-    const period = hours >= 6 && hours < 18 ? "Selamat Pagi" : "Selamat Malam";
+    let period;
+    if (hours >= 5 && hours < 11) {
+      period = "Selamat Pagi";
+    } else if (hours >= 11 && hours < 15) {
+      period = "Selamat Siang";
+    } else if (hours >= 15 && hours < 18) {
+      period = "Selamat Sore";
+    } else {
+      period = "Selamat Malam";
+    }
 
     return `${formattedTime} ${period}`;
   };
+
+  // Contoh penggunaan:
+  const currentTime = new Date(); // Mengambil waktu saat ini
 
   return (
     <div className="dashboard-container">

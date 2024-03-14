@@ -39,6 +39,9 @@
 .dashboard-title p {
   color: #c89428;
 }
+.dashboard-title p b {
+  color: rgb(224, 244, 75);
+}
 
 .dashboard-table th,
 .dashboard-table td {
