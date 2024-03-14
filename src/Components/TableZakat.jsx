@@ -13,6 +13,12 @@ const TableZakat = () => {
   const [jakartaTime, setJakartaTime] = useState(new Date());
   const [currentIndex, setCurrentIndex] = useState(0); // Indeks tabel saat ini
   const [maxIndex, setMaxIndex] = useState(0); // Indeks maksimum tabel
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Define handleSearch outside of useEffect
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -135,6 +141,14 @@ const TableZakat = () => {
           Total Semua Data: <b>{totalAllData}</b>{" "}
         </p>
       </div>
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Cari berdasarkan nama..."
+          value={searchTerm}
+          onChange={handleSearch}
+        />
+      </div>
       <table className="dashboard-table">
         <thead>
           <tr>
@@ -147,6 +161,9 @@ const TableZakat = () => {
         </thead>
         <tbody>
           {zakat
+            .filter((data) =>
+              data.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
             .slice(currentIndex * 10, (currentIndex + 1) * 10)
             .map((data, index) => (
               <tr key={data.id}>
@@ -162,12 +179,15 @@ const TableZakat = () => {
       {/* Navigasi panah kiri dan kanan */}
       <div className="navigation">
         <button onClick={goToPrev} disabled={currentIndex === 0}>
-          {"< Prev"}
+          &#8678; Prev
         </button>
         <button onClick={goToNext} disabled={currentIndex === maxIndex}>
-          {"Next >"}
+          Next &#8680;
         </button>
       </div>
+      <footer>
+        <p>&copy; 2024 - zakatdasbord By EZ4</p>
+      </footer>
     </div>
   );
 };
