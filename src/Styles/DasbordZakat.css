@@ -1,0 +1,10 @@
+img {
+  width: 100%;
+  position: fixed;
+  object-fit: cover;
+  object-position: center;
+  z-index: -100;
+}
+.footer_img {
+  bottom: 0;
+}
