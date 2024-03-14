@@ -11,6 +11,8 @@ const TableZakat = () => {
   const [totalWanitaCount, setTotalWanitaCount] = useState(0);
   const [totalAllData, setTotalAllData] = useState(0);
   const [jakartaTime, setJakartaTime] = useState(new Date());
+  const [currentIndex, setCurrentIndex] = useState(0); // Indeks tabel saat ini
+  const [maxIndex, setMaxIndex] = useState(0); // Indeks maksimum tabel
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +47,10 @@ const TableZakat = () => {
       setTotalPriaCount(priaCount);
       setTotalWanitaCount(wanitaCount);
       setTotalAllData(allDataCount);
-
       setZakat(zakatData);
+
+      // Menghitung indeks maksimum tabel
+      setMaxIndex(Math.ceil(zakatData.length / 10) - 1);
     };
 
     fetchData();
@@ -87,8 +91,26 @@ const TableZakat = () => {
     return `${formattedTime} ${period}`;
   };
 
-  // Contoh penggunaan:
-  const currentTime = new Date(); // Mengambil waktu saat ini
+  const goToNext = () => {
+    if (currentIndex < maxIndex) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const goToPrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
 
   return (
     <div className="dashboard-container">
@@ -101,7 +123,7 @@ const TableZakat = () => {
           Total Jumblah Beras: <b>{totalBerasCount} Liter</b>
         </p>
         <p>
-          Total Jumblah Uang: <b>Rp.{totalUangCount}</b>
+          Total Jumblah Uang: <b>{formatRupiah(totalUangCount)}</b>
         </p>
         <p>
           Total Jumblah Pria: <b>{totalPriaCount}</b>
@@ -124,17 +146,28 @@ const TableZakat = () => {
           </tr>
         </thead>
         <tbody>
-          {zakat.map((data, index) => (
-            <tr key={data.id}>
-              <td>{index + 1}</td>
-              <td>{data.name}</td>
-              <td>{data.gender}</td>
-              <td>{data.item}</td>
-              <td>{parseFloat(data.count)}</td>
-            </tr>
-          ))}
+          {zakat
+            .slice(currentIndex * 10, (currentIndex + 1) * 10)
+            .map((data, index) => (
+              <tr key={data.id}>
+                <td>{currentIndex * 10 + index + 1}</td>
+                <td>{data.name}</td>
+                <td>{data.gender}</td>
+                <td>{data.item}</td>
+                <td>{formatRupiah(data.count)}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
+      {/* Navigasi panah kiri dan kanan */}
+      <div className="navigation">
+        <button onClick={goToPrev} disabled={currentIndex === 0}>
+          {"< Prev"}
+        </button>
+        <button onClick={goToNext} disabled={currentIndex === maxIndex}>
+          {"Next >"}
+        </button>
+      </div>
     </div>
   );
 };
